@@ -1,4 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@font-face {
+  font-family: 'IvyPresto Display';
+  src: url('https://gourmethouse.com/cdn/shop/t/2/assets/IvyPrestoDisplay-Thin.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IvyPresto Display';
+  src: url('https://gourmethouse.com/cdn/shop/t/2/assets/IvyPrestoDisplay-Thin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IvyPresto Display';
+  src: url('https://gourmethouse.com/cdn/shop/t/2/assets/IvyPrestoDisplay-Thin.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-

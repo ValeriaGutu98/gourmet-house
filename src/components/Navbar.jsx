@@ -11,100 +11,94 @@ const REGIONS = [{ label: "Europe", currency: "€" }];
 
 export default function Navbar() {
   const [regionOpen, setRegionOpen] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState(REGIONS[0]);
 
   return (
-    <div className="sticky top-0 z-50 bg-white">
-      <header className="mx-auto grid h-[75px] max-w-full grid-cols-[1fr_auto_1fr] items-center px-3">
+    <div className="sticky top-0 z-50 bg-white border-b border-black/5 select-none">
+      <header className="mx-auto grid h-[75px] max-w-full grid-cols-[1fr_auto_1fr] items-center px-6">
 
         <div className="flex items-center">
           <button
             type="button"
-            className="group flex h-[38px] items-center text-gh-brown transition-opacity hover:opacity-80"
+            className="group flex items-center gap-2.5 text-gh-brown transition-all hover:opacity-80 outline-none"
             aria-label="Menu"
           >
-            <span className="relative inline-flex items-center">
-              <span className="flex h-8 w-8 items-center justify-center">
-                <HiOutlineMenuAlt4 size={20} />
-              </span>
-              <span className="absolute left-[50px] top-1/2 -translate-y-1/2 font-futura text-[13px] font-medium uppercase leading-[15.6px] tracking-[2.4px]">
-                Menu
-              </span>
+            <span className="flex flex-col gap-[4px] w-5 justify-center items-start">
+              <span className="w-full h-[1.5px] bg-[#121212]"></span>
+              <span className="w-[12px] h-[1.5px] bg-[#121212] group-hover:w-full transition-all duration-300"></span>
+            </span>
+            <span className="font-sans text-[11px] font-semibold uppercase tracking-[3px] text-gh-dark">
+              Menu
             </span>
           </button>
         </div>
 
-
+  
         <div className="flex justify-center">
           <a href="/" className="block outline-none focus-visible:outline-none">
             <img
               src={LOGO_URL}
               alt="Gourmet House"
-              width={60}
-              height={60}
-              className="h-[60px] w-[60px] object-contain"
+              width={65}
+              height={65}
+              className="h-[65px] w-[65px] object-contain"
             />
           </a>
         </div>
 
 
-        <div className="flex items-center justify-end gap-1 text-gh-brown">
+        <div className="flex items-center justify-end gap-5 text-gh-dark">
 
           <a
             href="/cart"
-            className="flex h-[38px] w-[38px] items-center justify-center transition-opacity hover:opacity-80"
+            className="flex items-center justify-center transition-opacity hover:opacity-80"
             aria-label="Cart"
           >
-            <MdOutlineShoppingBag size={20} />
+            <MdOutlineShoppingBag size={18} className="text-gh-dark" />
           </a>
 
-   
-          <div className="relative">
+
+          <div className="relative flex items-center">
             <button
               type="button"
-              className="flex h-[38px] items-center gap-1 pl-3 pr-[22px] font-inter text-sm font-medium uppercase tracking-[2.4px] text-gh-dark transition-all hover:underline"
+              className="flex items-center gap-1 font-sans text-[11px] font-semibold uppercase tracking-[1.5px] text-gh-dark transition-all hover:opacity-80"
               onClick={() => setRegionOpen(!regionOpen)}
               aria-expanded={regionOpen}
-              aria-haspopup="listbox"
             >
-              <span>{selectedRegion.label}</span>
-              <IoMdCheckmark size={14} />
+              <span>EUR</span>
+              <span className="text-[7px] text-gh-dark/60">▼</span>
             </button>
-
 
             {regionOpen && (
               <ul
-                className="absolute right-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden border border-black/10 bg-white py-2 shadow-lg"
+                className="absolute right-0 top-full z-50 mt-2 min-w-[120px] overflow-hidden border border-black/10 bg-white py-1.5 shadow-lg text-gh-dark"
                 role="listbox"
               >
-                {REGIONS.map((region) => (
-                  <li key={region.label}>
-                    <button
-                      type="button"
-                      role="option"
-                      aria-selected={selectedRegion.label === region.label}
-                      className="flex w-full items-center justify-between px-4 py-2.5 text-left font-inter text-sm transition-colors hover:bg-black/5"
-                      onClick={() => {
-                        setSelectedRegion(region);
-                        setRegionOpen(false);
-                      }}
-                    >
-                      <span>{region.label}</span>
-                      <span className="text-black/60">{region.currency}</span>
-                    </button>
-                  </li>
-                ))}
+                <li>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between px-3 py-1.5 text-left font-sans text-xs hover:bg-black/5"
+                    onClick={() => setRegionOpen(false)}
+                  >
+                    <span>Europe (EUR)</span>
+                    <span className="text-black/50">€</span>
+                  </button>
+                </li>
               </ul>
             )}
           </div>
 
 
+          <span className="font-sans text-[11px] font-semibold text-gh-dark select-none">
+            €
+          </span>
+
+
           <button
             type="button"
-            className="flex h-[38px] w-[38px] items-center justify-center transition-opacity hover:opacity-80"
+            className="flex items-center justify-center transition-opacity hover:opacity-80"
             aria-label="Search"
           >
-            <CiSearch size={22} />
+            <CiSearch size={20} className="text-gh-dark" />
           </button>
         </div>
       </header>
