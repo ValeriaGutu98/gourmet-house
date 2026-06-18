@@ -107,13 +107,13 @@ export default function Navbar({ transparentOnTop = false }) {
         </div>
 
         <div className="flex items-center justify-end gap-5 text-gh-dark">
-          <a
-            href="/cart"
+          <Link
+            to="/cart"
             className="flex items-center justify-center transition-opacity hover:opacity-80"
             aria-label="Cart"
           >
             <MdOutlineShoppingBag size={18} className="text-gh-dark" />
-          </a>
+          </Link>
 
           <div className="relative flex items-center">
             <button

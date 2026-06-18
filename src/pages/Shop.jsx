@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import Hls from "hls.js";
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
 import { fetchProducts } from "../services/products";
 
 const HLS_VIDEO_URL =
@@ -26,6 +28,7 @@ export default function Shop() {
   const videoRef = useRef(null);
   const sortRef = useRef(null);
 
+  const location = useLocation();
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -48,6 +51,38 @@ export default function Shop() {
     "From the land": false,
     "Gifts and Others": false
   });
+
+
+  useEffect(() => {
+    if (location.state && location.state.category) {
+      const cat = location.state.category;
+      
+      const newFilters = {
+        "From the sea": [],
+        "From the land": [],
+        "Gifts and Others": []
+      };
+      
+      if (cat === "From the sea") {
+        newFilters["From the sea"] = FILTER_STRUCTURE["From the sea"];
+      } else if (cat === "From the land") {
+        newFilters["From the land"] = FILTER_STRUCTURE["From the land"];
+      } else if (cat === "Gifts and Others") {
+        newFilters["Gifts and Others"] = FILTER_STRUCTURE["Gifts and Others"];
+      }
+      
+      setActiveFilters(newFilters);
+      setStagedFilters(newFilters);
+      setExpandedAccordions({
+        "From the sea": cat === "From the sea",
+        "From the land": cat === "From the land",
+        "Gifts and Others": cat === "Gifts and Others"
+      });
+      
+
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     async function loadProducts() {
@@ -394,6 +429,7 @@ export default function Shop() {
           </div>
         )}
       </main>
+      <Footer />
 
 
       {isFilterOpen && (

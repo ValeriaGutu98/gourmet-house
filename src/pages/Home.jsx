@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import HeroVideo from "../components/HeroVideo";
+import Footer from "../components/Footer";
 import fishGraphic from "../assets/Fish_Graphic.webp";
 import { fetchProducts } from "../services/products";
 
@@ -14,12 +15,11 @@ export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const sliderRef = useRef(null);
 
-  // La Perle typewriter states
   const LA_PERLE_TEXT = "Pearls before wine.";
   const [typedLaPerle, setTypedLaPerle] = useState("");
   const [startTypingLaPerle, setStartTypingLaPerle] = useState(false);
 
-  // Caviar X typewriter states
+
   const CAVIAR_X_TEXT = "Refined, daily.";
   const [typedCaviarX, setTypedCaviarX] = useState("");
   const [startTypingCaviarX, setStartTypingCaviarX] = useState(false);
@@ -137,7 +137,7 @@ export default function Home() {
     }
   };
 
-  // Mouse Drag Scroll for Desktop
+
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -515,6 +515,7 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
