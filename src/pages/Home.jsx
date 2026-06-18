@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import HeroVideo from "../components/HeroVideo";
 import fishGraphic from "../assets/Fish_Graphic.webp";
@@ -104,15 +105,15 @@ export default function Home() {
             </h4>
 
             <div className="mt-4">
-              <a
-                href="/pages/about-us"
+              <Link
+                to="/pages/about-us"
                 className="font-assistant text-xs md:text-[13px] font-semibold uppercase tracking-[0.2em] text-gh-gold transition-all duration-300 hover:text-opacity-80 relative"
               >
                 <span className="inline-flex items-center gap-1.5 pb-1.5 border-b border-gh-gold">
                   SINCE 1965
                   <span className="text-[10px]">&gt;</span>
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -150,15 +151,15 @@ export default function Home() {
               </h2>
 
               <div className="hero-media-background__link mt-4">
-                <a
-                  href="/collections/all"
+                <Link
+                  to="/collections/all"
                   className="font-assistant text-xs md:text-[13px] font-semibold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:text-opacity-80 relative"
                 >
                   <span className="inline-flex items-center gap-1.5 pb-1.5 border-b border-white">
                     INDULGE A LITTLE
                     <span className="text-[10px]">&gt;</span>
                   </span>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
