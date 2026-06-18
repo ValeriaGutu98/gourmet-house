@@ -1,14 +1,189 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import HeroVideo from "../components/HeroVideo";
 import fishGraphic from "../assets/Fish_Graphic.webp";
+import { fetchProducts } from "../services/products";
 
 const STATEMENT_TEXT = "The only guest allowed to be late to dinner. Heritage\nsourcing in the Persian tradition. This caviar is not for\neveryone—but then, neither are you.";
 
 export default function Home() {
   const [typedText, setTypedText] = useState("");
   const [startTyping, setStartTyping] = useState(false);
+  const [bestSellers, setBestSellers] = useState([]);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const sliderRef = useRef(null);
+
+  // La Perle typewriter states
+  const LA_PERLE_TEXT = "Pearls before wine.";
+  const [typedLaPerle, setTypedLaPerle] = useState("");
+  const [startTypingLaPerle, setStartTypingLaPerle] = useState(false);
+
+  // Caviar X typewriter states
+  const CAVIAR_X_TEXT = "Refined, daily.";
+  const [typedCaviarX, setTypedCaviarX] = useState("");
+  const [startTypingCaviarX, setStartTypingCaviarX] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStartTypingLaPerle(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    const element = document.getElementById("la-perle-section");
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStartTypingCaviarX(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    const element = document.getElementById("caviar-x-section");
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!startTypingLaPerle) return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      setTypedLaPerle(LA_PERLE_TEXT.slice(0, index + 1));
+      index++;
+      if (index >= LA_PERLE_TEXT.length) {
+        clearInterval(interval);
+      }
+    }, 45);
+
+    return () => clearInterval(interval);
+  }, [startTypingLaPerle]);
+
+  useEffect(() => {
+    if (!startTypingCaviarX) return;
+
+    let index = 0;
+    const interval = setInterval(() => {
+      setTypedCaviarX(CAVIAR_X_TEXT.slice(0, index + 1));
+      index++;
+      if (index >= CAVIAR_X_TEXT.length) {
+        clearInterval(interval);
+      }
+    }, 45);
+
+    return () => clearInterval(interval);
+  }, [startTypingCaviarX]);
+
+  useEffect(() => {
+    async function loadBestSellers() {
+      try {
+        const { data, error } = await fetchProducts();
+        if (!error && data) {
+          // Sort products by starting price descending and take top 6
+          const sorted = [...data].sort((a, b) => {
+            const getMinPrice = (p) => {
+              if (!p.product_variants || p.product_variants.length === 0) return 0;
+              return Math.min(...p.product_variants.map(v => v.price));
+            };
+            return getMinPrice(b) - getMinPrice(a);
+          });
+          setBestSellers(sorted.slice(0, 6));
+        }
+      } catch (err) {
+        console.error("Error loading best sellers:", err);
+      }
+    }
+    loadBestSellers();
+  }, []);
+
+  const handleScroll = () => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const maxScroll = slider.scrollWidth - slider.clientWidth;
+    if (maxScroll <= 0) {
+      setScrollProgress(0);
+    } else {
+      setScrollProgress(slider.scrollLeft / maxScroll);
+    }
+  };
+
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -380, behavior: "smooth" });
+    }
+  };
+
+  const scrollRight = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: 380, behavior: "smooth" });
+    }
+  };
+
+  // Mouse Drag Scroll for Desktop
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    let isDown = false;
+    let startX;
+    let scrollLeftVal;
+
+    const onMouseDown = (e) => {
+      isDown = true;
+      slider.style.cursor = "grabbing";
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeftVal = slider.scrollLeft;
+    };
+
+    const onMouseLeave = () => {
+      isDown = false;
+      slider.style.cursor = "grab";
+    };
+
+    const onMouseUp = () => {
+      isDown = false;
+      slider.style.cursor = "grab";
+    };
+
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      slider.scrollLeft = scrollLeftVal - walk;
+    };
+
+    slider.addEventListener("mousedown", onMouseDown);
+    slider.addEventListener("mouseleave", onMouseLeave);
+    slider.addEventListener("mouseup", onMouseUp);
+    slider.addEventListener("mousemove", onMouseMove);
+    slider.style.cursor = "grab";
+
+    return () => {
+      slider.removeEventListener("mousedown", onMouseDown);
+      slider.removeEventListener("mouseleave", onMouseLeave);
+      slider.removeEventListener("mouseup", onMouseUp);
+      slider.removeEventListener("mousemove", onMouseMove);
+    };
+  }, [bestSellers]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -157,6 +332,181 @@ export default function Home() {
                 >
                   <span className="inline-flex items-center gap-1.5 pb-1.5 border-b border-white">
                     INDULGE A LITTLE
+                    <span className="text-[10px]">&gt;</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="w-full py-20 bg-white relative border-t border-black/5 overflow-hidden">
+          <h2 className="font-ivy text-[34px] md:text-[44px] text-gh-dark text-center font-light mb-12 tracking-wide uppercase">
+            Best Sellers
+          </h2>
+          
+          <div className="relative max-w-7xl mx-auto px-6 md:px-12 group">
+
+            <button
+              type="button"
+              onClick={scrollLeft}
+              className="absolute left-6 md:left-12 top-[40%] -translate-y-1/2 bg-black/[0.02] hover:bg-black/[0.06] text-[#121212]/70 h-16 w-10 z-20 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Scroll left"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </button>
+            
+            <button
+              type="button"
+              onClick={scrollRight}
+              className="absolute right-6 md:right-12 top-[40%] -translate-y-1/2 bg-black/[0.02] hover:bg-black/[0.06] text-[#121212]/70 h-16 w-10 z-20 flex items-center justify-center transition-colors cursor-pointer"
+              aria-label="Scroll right"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.2} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+
+
+            <div
+              ref={sliderRef}
+              onScroll={handleScroll}
+              className="flex overflow-x-auto gap-8 scrollbar-none scroll-smooth pb-4 px-2 select-none"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {bestSellers.map((product) => {
+                const primaryImage = product.images?.[0] || "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800";
+                return (
+                  <Link
+                    key={product.id}
+                    to="/collections/all"
+                    className="min-w-[75%] sm:min-w-[46%] md:min-w-[31.3%] flex flex-col items-center text-center group outline-none"
+                  >
+                    <div className="aspect-square w-full overflow-hidden bg-transparent mb-5 relative">
+                      <img
+                        src={primaryImage}
+                        alt={product.title}
+                        className="w-full h-full object-cover transition-transform duration-[800ms] ease-in-out group-hover:scale-105 pointer-events-none"
+                      />
+                    </div>
+                    <h3 className="font-assistant text-[13px] font-semibold uppercase tracking-[3px] text-[#121212] leading-none mb-1">
+                      {product.title}
+                    </h3>
+                  </Link>
+                );
+              })}
+            </div>
+
+
+            <div className="w-64 h-[2px] bg-black/10 relative mt-12 mx-auto overflow-hidden">
+              <div
+                className="absolute top-0 bottom-0 left-0 bg-gh-gold transition-transform duration-150"
+                style={{
+                  width: "40%",
+                  transform: `translateX(${scrollProgress * 150}%)`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+
+        <div
+          id="la-perle-section"
+          className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] flex items-center overflow-hidden bg-[#f4f4f4] border-t border-black/5"
+        >
+
+          <div className="absolute inset-0 z-0 select-none pointer-events-none">
+            <img
+              src="https://gourmethouse.com/cdn/shop/files/la-perle-full-width.jpg?v=1767984077&width=1500"
+              alt="La Perle"
+              className="w-full h-full object-cover object-right md:object-center select-none"
+            />
+          </div>
+
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full h-full flex items-center justify-start">
+            <div className="max-w-[85%] sm:max-w-[60%] md:max-w-xl flex flex-col items-start text-left gap-4 md:gap-5">
+              <h6 className="font-assistant text-[11px] md:text-[12px] font-semibold uppercase tracking-[0.25em] text-[#c5a059]">
+                LA PERLE
+              </h6>
+              
+              <h2 className="font-ivy text-[34px] sm:text-[44px] md:text-[54px] lg:text-[60px] text-[#121212] leading-[1.2] font-light min-h-[50px] md:min-h-[75px] lg:min-h-[90px]">
+                {typedLaPerle}
+                {typedLaPerle.length < LA_PERLE_TEXT.length && (
+                  <span className="inline-block w-[1.5px] h-8 bg-gh-gold ml-1 align-middle animate-pulse">
+                    |
+                  </span>
+                )}
+              </h2>
+              
+              <p className="font-assistant text-[12px] md:text-[14px] leading-relaxed text-[#121212]/75 font-light">
+                La Perle, served in a pearl. Excessive? Of course not, it fits in a spoon. <br className="hidden sm:inline" />
+                A mother-of-pearl spoon—you're not an animal.
+              </p>
+              
+              <div className="mt-4 md:mt-5">
+                <Link
+                  to="/collections/all"
+                  className="font-assistant text-xs md:text-[13px] font-semibold uppercase tracking-[0.2em] text-[#121212] transition-all duration-300 hover:text-opacity-80 relative"
+                >
+                  <span className="inline-flex items-center gap-1.5 pb-1.5 border-b border-[#121212]">
+                    ENJOY APRÈS-ANYTHING
+                    <span className="text-[10px]">&gt;</span>
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="caviar-x-section"
+          className="relative w-full h-[450px] sm:h-[500px] md:h-[600px] flex items-center overflow-hidden bg-[#f4f4f4] border-t border-black/5"
+        >
+
+          <div className="absolute inset-0 z-0 select-none pointer-events-none">
+            <img
+              src="https://gourmethouse.com/cdn/shop/files/pills-full-width.jpg?v=1767976589&width=1500"
+              alt="Caviar X"
+              className="w-full h-full object-cover object-left md:object-center select-none"
+            />
+          </div>
+
+
+          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full h-full flex items-center justify-end">
+            <div className="max-w-[85%] sm:max-w-[60%] md:max-w-xl flex flex-col items-start text-left gap-4 md:gap-5">
+              <h6 className="font-assistant text-[11px] md:text-[12px] font-semibold uppercase tracking-[0.25em] text-[#c5a059]">
+                CAVIAR X
+              </h6>
+              
+              <h2 className="font-ivy text-[34px] sm:text-[44px] md:text-[54px] lg:text-[60px] text-[#121212] leading-[1.2] font-light min-h-[50px] md:min-h-[75px] lg:min-h-[90px]">
+                {typedCaviarX}
+                {typedCaviarX.length < CAVIAR_X_TEXT.length && (
+                  <span className="inline-block w-[1.5px] h-8 bg-gh-gold ml-1 align-middle animate-pulse">
+                    |
+                  </span>
+                )}
+              </h2>
+              
+              <p className="font-assistant text-[12px] md:text-[14px] leading-relaxed text-[#121212]/75 font-light">
+                100% pure caviar oil from sustainably sourced Polish Acipenser baerii. Omega-3, 6, and 9—supporting hydration, elasticity, and a youthful appearance.
+              </p>
+              
+              <p className="font-assistant text-[12px] md:text-[14px] leading-relaxed text-[#121212]/75 font-light">
+                Purified to the highest standard under strictly controlled aquaculture conditions. Free from heavy metals, PCBs, and microplastics. Odorless. Highly concentrated.
+              </p>
+              
+              <div className="mt-4 md:mt-5">
+                <Link
+                  to="/collections/all"
+                  className="font-assistant text-xs md:text-[13px] font-semibold uppercase tracking-[0.2em] text-[#121212] transition-all duration-300 hover:text-opacity-80 relative"
+                >
+                  <span className="inline-flex items-center gap-1.5 pb-1.5 border-b border-[#121212]">
+                    SHOP NOW
                     <span className="text-[10px]">&gt;</span>
                   </span>
                 </Link>

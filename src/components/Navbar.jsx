@@ -174,7 +174,7 @@ export default function Navbar({ transparentOnTop = false }) {
           <img
             src={fishGraphic}
             alt=""
-            className="w-[140%] md:w-[110%] max-w-[850px] h-auto object-contain opacity-[0.08] translate-x-[20%] translate-y-[15%] pointer-events-none select-none"
+            className="w-[140%] md:w-[110%] max-w-[850px] h-auto object-contain opacity-50 translate-x-[20%] translate-y-[15%] pointer-events-none select-none"
           />
         </div>
 
