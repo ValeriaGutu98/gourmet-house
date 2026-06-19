@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function ProductCard({ product }) {
   const {
+    id,
     title,
     origin,
     species,
@@ -24,7 +26,7 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="group flex flex-col items-center select-none text-center">
+    <Link to={`/products/${id}`} className="group flex flex-col items-center select-none text-center w-full">
       <div className="relative aspect-square w-full overflow-hidden bg-transparent mb-5 cursor-pointer">
         <img
           src={primaryImage}
@@ -40,17 +42,17 @@ export default function ProductCard({ product }) {
         )}
       </div>
 
-      <h3 className="font-assistant text-[14px] font-semibold uppercase tracking-[3px] text-[#121212] mb-3 leading-none">
+      <h3 className="font-assistant text-[14px] font-semibold uppercase tracking-[3px] text-[#121212] mb-3 leading-none group-hover:text-gh-gold transition-colors duration-300">
         {title}
       </h3>
 
       <p className="font-assistant text-[12px] leading-relaxed text-[#121212]/60 font-light max-w-[95%] mx-auto">
-        {origin} &middot; <span className="italic">{species}</span> Pearl size {pearl_size}{appearance} {taste}{texture}
+        {origin} &middot; <span className="italic">{species}</span> Pearl size {pearl_size} {appearance} {taste} {texture}
       </p>
 
       <span className="font-sans text-[13px] font-bold tracking-wide text-[#121212] mt-4">
         {getStartingPrice()}
       </span>
-    </div>
+    </Link>
   );
 }

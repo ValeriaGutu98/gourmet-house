@@ -90,3 +90,25 @@ export async function fetchProducts() {
     return { data: FALLBACK_PRODUCTS, isFallback: true };
   }
 }
+
+export async function fetchProductById(id) {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, product_variants(*)')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.warn("Failed to fetch product from Supabase. Using fallback local data. Error detail:", error.message);
+      const fallback = FALLBACK_PRODUCTS.find(p => p.id === id);
+      return { data: fallback, isFallback: true };
+    }
+
+    return { data, isFallback: false };
+  } catch (err) {
+    console.warn("Unexpected error fetching product. Using fallback local data:", err);
+    const fallback = FALLBACK_PRODUCTS.find(p => p.id === id);
+    return { data: fallback, isFallback: true };
+  }
+}

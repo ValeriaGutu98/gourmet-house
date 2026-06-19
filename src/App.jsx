@@ -5,6 +5,8 @@ import Shop from "./pages/Shop";
 import OurStory from "./pages/OurStory";
 import Contact from "./pages/Contact";
 import Cart from "./pages/Cart";
+import ProductDetail from "./pages/ProductDetail";
+import CartToast from "./components/CartToast";
 
 function ScrollToTop() {
   const location = useLocation();
@@ -20,12 +22,14 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <CartToast />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collections/all" element={<Shop />} />
         <Route path="/pages/about-us" element={<OurStory />} />
         <Route path="/pages/contact-us" element={<Contact />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </BrowserRouter>

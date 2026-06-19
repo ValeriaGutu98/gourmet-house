@@ -5,6 +5,7 @@ import { MdOutlineShoppingBag } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { IoMdCheckmark } from "react-icons/io";
 import fishGraphic from "../assets/Fish_Graphic.webp";
+import { useCart } from "../context/CartContext";
 
 const LOGO_URL =
   "https://gourmethouse.com/cdn/shop/files/ghc-logo-gold.png?v=1763673785&width=180";
@@ -15,6 +16,7 @@ export default function Navbar({ transparentOnTop = false }) {
   const [regionOpen, setRegionOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { totalItemsCount } = useCart();
 
   useEffect(() => {
     if (!transparentOnTop) return;
@@ -109,10 +111,15 @@ export default function Navbar({ transparentOnTop = false }) {
         <div className="flex items-center justify-end gap-5 text-gh-dark">
           <Link
             to="/cart"
-            className="flex items-center justify-center transition-opacity hover:opacity-80"
+            className="relative flex items-center justify-center transition-opacity hover:opacity-80"
             aria-label="Cart"
           >
             <MdOutlineShoppingBag size={18} className="text-gh-dark" />
+            {totalItemsCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-black text-white text-[8px] font-semibold w-3.5 h-3.5 flex items-center justify-center rounded-full leading-none">
+                {totalItemsCount}
+              </span>
+            )}
           </Link>
 
           <div className="relative flex items-center">
